@@ -59,9 +59,9 @@ impl<T: BlockSizeUser> BlockSizeUser for &mut T {
 }
 
 /// Trait implemented for supported block sizes, i.e. for types from `U1` to `U255`.
-pub trait BlockSizes: ArrayLength<u8> + sealed::BlockSizes + 'static {}
+pub trait BlockSizes: ArrayLength + sealed::BlockSizes + 'static {}
 
-impl<T: ArrayLength<u8> + sealed::BlockSizes> BlockSizes for T {}
+impl<T: ArrayLength + sealed::BlockSizes> BlockSizes for T {}
 
 mod sealed {
     use generic_array::typenum::{Gr, IsGreater, IsLess, Le, NonZero, Unsigned, U1, U256};
@@ -80,13 +80,13 @@ mod sealed {
 /// Types which can process blocks in parallel.
 pub trait ParBlocksSizeUser: BlockSizeUser {
     /// Number of blocks which can be processed in parallel.
-    type ParBlocksSize: ArrayLength<Block<Self>>;
+    type ParBlocksSize: ArrayLength<ArrayType<u8> = Block<Self>>;
 }
 
 /// Types which return data with the given size.
 pub trait OutputSizeUser {
     /// Size of the output in bytes.
-    type OutputSize: ArrayLength<u8> + 'static;
+    type OutputSize: ArrayLength + 'static;
 
     /// Return output size in bytes.
     #[inline(always)]
@@ -100,7 +100,7 @@ pub trait OutputSizeUser {
 /// Generally it's used indirectly via [`KeyInit`] or [`KeyIvInit`].
 pub trait KeySizeUser {
     /// Key size in bytes.
-    type KeySize: ArrayLength<u8> + 'static;
+    type KeySize: ArrayLength + 'static;
 
     /// Return key size in bytes.
     #[inline(always)]
@@ -114,7 +114,7 @@ pub trait KeySizeUser {
 /// Generally it's used indirectly via [`KeyIvInit`] or [`InnerIvInit`].
 pub trait IvSizeUser {
     /// Initialization vector size in bytes.
-    type IvSize: ArrayLength<u8> + 'static;
+    type IvSize: ArrayLength + 'static;
 
     /// Return IV size in bytes.
     #[inline(always)]
